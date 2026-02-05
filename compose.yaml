@@ -43,6 +43,7 @@ services:
     image: solr:9-slim
     restart: always
     container_name: solr
+    profiles: [search]
     environment:
       - JAVA_TOOL_OPTIONS=-XX:MaxRAMPercentage=75.0
     command: ["/opt/solr/bin/solr", "start", "-p", "8983", "-f", "-force"]
@@ -67,6 +68,7 @@ services:
   caddy:
     image: caddy:${CADDY_IMAGE_TAG}
     container_name: caddy
+    profiles: [proxy]
     restart: always
     ports:
       - "80:80"
@@ -83,7 +85,24 @@ services:
         condition: service_healthy
     logging: *fsi-logging
 
+  lsyncd:
+    build: container/lsyncd
+    profiles: [mirror]
+    restart: always
+    container_name: lsyncd
+    env_file:
+      - .env
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - ./conf/lsyncd/lsyncd.conf.lua:/config/lsyncd.lua:ro
+      - ${SYNC_KEY}:/sync.key:ro
+      - ${ASSET_PATH}:${ASSET_PATH}:ro
+      - ${OVERLAY_PATH}:${OVERLAY_PATH}:ro
+      - ${STORAGE_PATH}:${STORAGE_PATH}:ro
+      - ${LOG_PATH}/lsync:/var/log
+    #      - ${FSI_CONFIG_PATH}:${FSI_CONFIG_PATH}:ro
+    logging: *fsi-logging
+
 volumes:
   caddy_data:
   caddy_config:
-  solr_data: {}
