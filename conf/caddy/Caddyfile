@@ -1,0 +1,10 @@
+{$SERVER_DOMAINS} {
+
+    reverse_proxy fsi-server:8080 {
+        header_up Host {host}
+        header_up X-Real-IP {remote_host}
+    }
+
+    encode zstd gzip
+
+}
