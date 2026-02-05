@@ -1,7 +1,7 @@
 services:
 
   benchmark:
-    build: container/benchmark
+    build: builder/benchmark
     volumes:
       - ${ASSET_PATH}:/bench/assets
       - ${STORAGE_PATH}:/bench/storage

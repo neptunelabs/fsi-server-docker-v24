@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <config>
-  <luceneMatchVersion>9.11</luceneMatchVersion>
+  <luceneMatchVersion>9.12</luceneMatchVersion>
 
   <dataDir>${solr.data.dir:}</dataDir>
+
+  <schemaFactory class="ManagedIndexSchemaFactory">
+    <bool name="mutable">true</bool>
+    <str name="managedSchemaResourceName">managed-schema.xml</str>
+  </schemaFactory>
 
   <directoryFactory name="DirectoryFactory"
     class="${solr.directoryFactory:solr.NRTCachingDirectoryFactory}"/>
@@ -13,6 +18,12 @@
   <indexConfig>
     <lockType>${solr.lock.type:native}</lockType>
   </indexConfig>
+
+  <!-- Chain the defined processors and make them the default for updates -->
+  <updateRequestProcessorChain name="add-unknown-fields-to-the-schema" default="true" processor="uuid,remove-blank,field-name-mutating,parse-boolean,parse-long,parse-double,parse-date,add-schema-fields">
+    <processor class="solr.LogUpdateProcessorFactory"/>
+    <processor class="solr.RunUpdateProcessorFactory"/>
+  </updateRequestProcessorChain>
 
   <!-- The default high-performance update handler -->
   <updateHandler class="solr.DirectUpdateHandler2">
@@ -52,10 +63,9 @@
     <lst name="defaults">
       <str name="echoParams">explicit</str>
       <int name="rows">10</int>
-      <str name="df">text</str>
+      <str name="df">_text_</str>
     </lst>
   </requestHandler>
-
 
   <!-- the request handler used by FSI Server -->
   <requestHandler name="/fsi_query" class="solr.SearchHandler">
@@ -63,32 +73,14 @@
         <str name="echoParams">explicit</str>
         <str name="defType">edismax</str>
         <str name="wt">json</str>
-        <str name="df">text</str>
+        <str name="df">_text_</str>
     </lst>
-  </requestHandler>
-
-  <!-- A request handler that returns indented JSON by default -->
-  <requestHandler name="/query" class="solr.SearchHandler">
-     <lst name="defaults">
-       <str name="echoParams">explicit</str>
-       <str name="wt">json</str>
-       <str name="indent">true</str>
-       <str name="df">text</str>
-     </lst>
-  </requestHandler>
-
-  <requestHandler name="/get" class="solr.RealTimeGetHandler">
-     <lst name="defaults">
-       <str name="omitHeader">true</str>
-       <str name="wt">json</str>
-       <str name="indent">true</str>
-     </lst>
   </requestHandler>
 
   <!-- Shared parameters for multiple Request Handlers -->
   <initParams path="/update/**,/query,/select,/spell">
     <lst name="defaults">
-      <str name="df">all</str>
+      <str name="df">_text_</str>
     </lst>
   </initParams>
 

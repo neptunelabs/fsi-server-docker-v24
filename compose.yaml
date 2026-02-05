@@ -15,7 +15,6 @@ services:
     environment:
       - SOLR_SERVER_URI=${SOLR_SERVER_URI}
       - LOG_FSI_LEVEL=${LOG_FSI_LEVEL}
-      - JAVA_TOOL_OPTIONS=-XX:MaxRAMPercentage=75.0
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - ${FSI_CONFIG_PATH}:/srv/fsi/mounts/config
@@ -48,8 +47,10 @@ services:
       - JAVA_TOOL_OPTIONS=-XX:MaxRAMPercentage=75.0
     command: ["/opt/solr/bin/solr", "start", "-p", "8983", "-f", "-force"]
     volumes:
-      - ${SOLR_PATH}:/opt/solr/server/solr/fsi-server
+      - ${SOLR_PATH}:/var/solr/data/fsi-server
     logging: *fsi-logging
+    ports:
+      - "8983:8983"
     deploy:
       resources:
         limits:
@@ -59,11 +60,11 @@ services:
           cpus: "0.25"
           memory: 256M
     healthcheck:
-      test: ["CMD", "solr", "healthcheck", "-p", "8983"]
-      interval: 10s
-      timeout: 5s
+      test: ["CMD-SHELL", "curl -f http://localhost:8983/solr/admin/info/system || exit 1"]
+      interval: 30s
+      timeout: 10s
       retries: 5
-      start_period: 20s
+      start_period: 5s
 
   caddy:
     image: caddy:${CADDY_IMAGE_TAG}
@@ -86,7 +87,7 @@ services:
     logging: *fsi-logging
 
   lsyncd:
-    build: container/lsyncd
+    build: builder/lsyncd
     profiles: [mirror]
     restart: always
     container_name: lsyncd
@@ -100,7 +101,7 @@ services:
       - ${OVERLAY_PATH}:${OVERLAY_PATH}:ro
       - ${STORAGE_PATH}:${STORAGE_PATH}:ro
       - ${LOG_PATH}/lsync:/var/log
-    #      - ${FSI_CONFIG_PATH}:${FSI_CONFIG_PATH}:ro
+    # - ${FSI_CONFIG_PATH}:${FSI_CONFIG_PATH}:ro
     logging: *fsi-logging
 
 volumes:

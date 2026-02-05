@@ -21,7 +21,7 @@
     <field name="file.statusupdate" type="pdate" indexed="true" stored="false" />
     <field name="file.icc" type="string" indexed="true" stored="false" />
 
-    <field name="all" type="text_general" multiValued="true" indexed="true" stored="false" />
+    <field name="_text_" type="text_general" indexed="true" stored="false" multiValued="true"/>
 
     <field name="_version_" type="plong" indexed="true" stored="true" />
 
@@ -33,12 +33,11 @@
     <dynamicField name="*" type="ignored" multiValued="true" />
   </fields>
 
-  <df>all</df>
   <solrQueryParser q.op="AND"/>
 
   <uniqueKey>asset.fullpath</uniqueKey>
 
-  <copyField source="*" dest="all" />
+  <copyField source="*" dest="_text_" />
 
   <types>
     <fieldType name="string" class="solr.StrField" sortMissingLast="true" />
