@@ -64,6 +64,8 @@ The `compose.yaml` file orchestrates the necessary services. Service activation 
 
 The primary configuration is managed through the `.env` file. Adjust the paths and settings to match your environment.
 
+### Please note that the .env file is not compatible with the previous installation of version 22. You should transfer the values manually, as a few variable names have changed.
+
 | VARIABLE                | DESCRIPTION                                                               |
 |-------------------------|---------------------------------------------------------------------------|
 | `COMPOSE_PROFILES`      | Comma-separated list of services to enable (`proxy`, `search`, `mirror`). |
@@ -79,7 +81,6 @@ The primary configuration is managed through the `.env` file. Adjust the paths a
 | `LOG_PATH`              | Central directory for all log files.                                      |
 | `LOG_FSI_LEVEL`         | Log output verbosity for the FSI Server.                                  |
 | `FSI_MEM_LIMIT`         | Maximum memory limit for the FSI Server container (e.g., 4G).             |
-| `FSI_MEM_RESERVATION`   | Guaranteed memory reservation for the FSI Server container (e.g., 2G).    |
 | `MIRROR_HOSTNAME`       | Domain name or IP of the mirror server.                                   |
 | `MIRROR_SSH_PORT`       | SSH port of the mirror server.                                            |
 | `MIRROR_SYNC_KEY`       | Path to the lsyncd private key for synchronization.                       |
