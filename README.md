@@ -61,13 +61,14 @@ Once the containers are running, you can access the FSI Server web interface. By
 ### `compose.yaml` and `.env`
 
 The `compose.yaml` file orchestrates the necessary services. Service activation is managed via Docker Compose profiles in the `.env` file. The default setup includes:
+- [FSI Server](https://www.neptunelabs.com/fsi-server/) for image generation.
 - [Caddy](https://caddyserver.com/) for automatic HTTPS and reverse proxying.
 - [Apache Solr](https://solr.apache.org/) for search.
 - [lsyncd](https://github.com/lsyncd/lsyncd) for optional mirror synchronization.
 
 The primary configuration is managed through the `.env` file. Adjust the paths and settings to match your environment.
 
-### Please note that the .env file is not compatible with the previous installation of version 22. You should transfer the values manually, as a few variable names have changed.
+___Please note that the .env file is not compatible with the previous installation of version 22. You should transfer the values manually, as a few variable names have changed.___
 
 | VARIABLE                | DESCRIPTION                                                               |
 |-------------------------|---------------------------------------------------------------------------|
