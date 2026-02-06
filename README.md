@@ -18,7 +18,7 @@
 FSI Server dynamically generates images in various formats, sizes, and qualities in real-time.
 Upload a single high-resolution source image, and FSI Server will deliver variations on-demand via HTTP queries.
 This eliminates not only manual image preparation, but also any pre-calculation of image sizes, qualities, and formats. No variants need to be calculated or kept on hand.
-FSI Server also includes a suite of viewers for easy integration into your websites.
+FSI Server also includes a suite of viewer components for easy integration into websites and web applications.
 
 ## Getting Started
 
@@ -68,7 +68,7 @@ The `compose.yaml` file orchestrates the necessary services. Service activation 
 
 The primary configuration is managed through the `.env` file. Adjust the paths and settings to match your environment.
 
-___Please note that the .env file is not compatible with the previous installation of version 22. You should transfer the values manually, as a few variable names have changed.___
+> __Important: The `.env` file format is not compatible with version 22. Transfer values manually, as several variable names have changed.__
 
 | VARIABLE                | DESCRIPTION                                                               |
 |-------------------------|---------------------------------------------------------------------------|
@@ -95,13 +95,13 @@ ___Please note that the .env file is not compatible with the previous installati
 - **`conf/caddy/`**: Holds the `Caddyfile` for configuring the reverse proxy. Caddy automatically handles certificate management.
 - **`conf/lsyncd/`**: Configuration for the lsyncd container, used for mirror server synchronization.
 - **`fsi-data/assets/`**: Default location for your source images and static files. This path is configurable via the `ASSET_PATH` variable.
-- **`fsi-data/storage/`**: (Created on start) Stores optimized versions of your assets. This directory is mandatory for persistence.
+- **`fsi-data/storage/`**: *(created on start)* Stores optimized versions of your assets. This directory is mandatory for persistence.
 - **`fsi-data/solr-core/`**: Contains the Solr core for FSI Server's internal search. It will be recreated on restart if not present.
-- **`fsi-data/overlay/`**: (Created on start) Stores presets and skins for the FSI Viewer.
-- **`fsi-data/logs/`**: (Created on start) Central location for all service logs.
+- **`fsi-data/overlay/`**: *(created on start)* Stores presets and skins for the FSI Viewer.
+- **`fsi-data/logs/`**: *(created on start)* Central location for all service logs.
 - **`container/`**: Contains Dockerfiles for building the lsync and benchmark containers. Modifications are typically not needed.
 
-### Where to Put My Pictures?
+### Where to put my images?
 
 For testing, you can place your images in `fsi-data/assets/images` and static files in `fsi-data/assets/statics`. For production, store your assets in a location suitable for your backup and synchronization strategy. Then, update or create new connectors in `conf/fsi-server/connectors` to map to your asset locations.
 
@@ -128,7 +128,7 @@ For high-availability setups, enable the `mirror` profile in `COMPOSE_PROFILES`.
 4.  Customize synchronization paths in `conf/lsyncd/lsyncd.conf.lua` if your directory structure differs.
 5.  Restart the lsyncd container: `docker compose restart lsyncd` and check the logs: `docker compose logs -f lsyncd`.
 
-**Important:** Do **not** synchronize the `storage` directory. Each server should build its own storage to avoid cache inconsistencies.
+> **Important:** Do **not** synchronize the `storage` directory. Each server should build its own storage to avoid cache inconsistencies.
 
 ### Backup
 
