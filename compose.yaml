@@ -9,7 +9,7 @@ x-logging:
 services:
 
   fsi-server:
-    image: ${FSI_SERVER_IMAGE}:${FSI_SERVER_IMAGE_TAG}
+    image: ${FSI_SERVER_IMAGE_NAME}:${FSI_SERVER_IMAGE_TAG}
     restart: always
     container_name: fsi-server
     environment:
@@ -24,14 +24,15 @@ services:
       - ${LOG_PATH}/fsi:/srv/fsi/mounts/catalina/logs
     depends_on:
       solr-server:
-        condition: service_healthy
+        condition: service_started
+        required: false
     logging: *fsi-logging
     deploy:
       resources:
         limits:
-          memory: 4G
+          memory: ${FSI_MEM_LIMIT}
         reservations:
-          memory: 2G
+          memory: ${FSI_MEM_RESERVATION}
     ulimits:
       nproc: 65535
       nofile:
@@ -67,7 +68,7 @@ services:
       start_period: 5s
 
   caddy:
-    image: caddy:${CADDY_IMAGE_TAG}
+    image: caddy:2-alpine
     container_name: caddy
     profiles: [proxy]
     restart: always
@@ -83,7 +84,7 @@ services:
       - caddy_config:/config
     depends_on:
       fsi-server:
-        condition: service_healthy
+        condition: service_started
     logging: *fsi-logging
 
   lsyncd:
@@ -96,7 +97,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - ./conf/lsyncd/lsyncd.conf.lua:/config/lsyncd.lua:ro
-      - ${SYNC_KEY}:/sync.key:ro
+      - ${MIRROR_SYNC_KEY}:/sync.key:ro
       - ${ASSET_PATH}:${ASSET_PATH}:ro
       - ${OVERLAY_PATH}:${OVERLAY_PATH}:ro
       - ${STORAGE_PATH}:${STORAGE_PATH}:ro

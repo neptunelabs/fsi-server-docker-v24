@@ -57,58 +57,48 @@ Once the containers are running, you can access the FSI Server web interface. By
 
 ### `compose.yaml` and `.env`
 
-The `compose.yaml` file orchestrates the necessary services, including [Apache Solr](https://solr.apache.org/) for search, [nginx](https://nginx.org/) for SSL termination, and [lsyncd](https://github.com/lsyncd/lsyncd) for synchronization. You can customize this setup, for example, by replacing nginx with another reverse proxy like [Caddy](https://caddyserver.com/) or [Traefik](https://traefik.io/).
+The `compose.yaml` file orchestrates the necessary services. Service activation is managed via Docker Compose profiles in the `.env` file. The default setup includes:
+- [Caddy](https://caddyserver.com/) for automatic HTTPS and reverse proxying.
+- [Apache Solr](https://solr.apache.org/) for search.
+- [lsyncd](https://github.com/lsyncd/lsyncd) for optional mirror synchronization.
 
 The primary configuration is managed through the `.env` file. Adjust the paths and settings to match your environment.
 
-| VARIABLE             | DESCRIPTION                                                            |
-|----------------------|------------------------------------------------------------------------|
-| `FSI_SERVER_IMAGE_TAG` | The FSI Server version to use.                                         |
-| `NGINX_IMAGE_TAG`      | The version tag for the nginx container.                               |
-| `FSI_CONFIG_PATH`      | Filesystem path for FSI Server configuration.                          |
-| `NGINX_CONFIG_PATH`    | Path to nginx configuration and certificates.                          |
-| `ASSET_PATH`           | Filesystem path for your source images and static assets.              |
-| `STORAGE_PATH`         | Filesystem path for optimized, real-time-ready images.                 |
-| `OVERLAY_PATH`         | Configuration folder for FSI Viewer settings.                          |
-| `SOLR_PATH`            | Path for the FSI Server Solr core index.                               |
-| `SOLR_SERVER_URI`      | HTTP path to the Apache Solr server.                                   |
-| `LOG_PATH`             | Central directory for all log files.                                   |
-| `LOG_FSI_LEVEL`        | Log output verbosity for the FSI Server.                               |
-| `SYNC_KEY`             | Path to the lsyncd private key for synchronization.                    |
-| `MIRROR_HOSTNAME`      | Domain name or IP of the mirror server.                                |
-| `MIRROR_SSH_PORT`      | SSH port of the mirror server.                                         |
+| VARIABLE                | DESCRIPTION                                                               |
+|-------------------------|---------------------------------------------------------------------------|
+| `COMPOSE_PROFILES`      | Comma-separated list of services to enable (`proxy`, `search`, `mirror`). |
+| `SERVER_DOMAINS`        | Your public domain(s). Caddy will manage SSL for these.                   |
+| `FSI_SERVER_IMAGE_NAME` | The FSI Server container repository                                       |
+| `FSI_SERVER_IMAGE_TAG`  | The FSI Server version to use. (e.g. 24.07)                               |
+| `FSI_CONFIG_PATH`       | Filesystem path for FSI Server configuration.                             |
+| `ASSET_PATH`            | Filesystem path for your source images and static assets.                 |
+| `STORAGE_PATH`          | Filesystem path for optimized, real-time-ready images.                    |
+| `OVERLAY_PATH`          | Configuration folder for FSI Viewer settings.                             |
+| `SOLR_PATH`             | Path for the FSI Server Solr core index.                                  |
+| `SOLR_SERVER_URI`       | HTTP path to the Apache Solr server.                                      |
+| `LOG_PATH`              | Central directory for all log files.                                      |
+| `LOG_FSI_LEVEL`         | Log output verbosity for the FSI Server.                                  |
+| `FSI_MEM_LIMIT`         | Maximum memory limit for the FSI Server container (e.g., 4G).             |
+| `FSI_MEM_RESERVATION`   | Guaranteed memory reservation for the FSI Server container (e.g., 2G).    |
+| `MIRROR_HOSTNAME`       | Domain name or IP of the mirror server.                                   |
+| `MIRROR_SSH_PORT`       | SSH port of the mirror server.                                            |
+| `MIRROR_SYNC_KEY`       | Path to the lsyncd private key for synchronization.                       |
 
 ### Directory Structure
 
 - **`conf/fsi-server/`**: Contains all FSI Server settings. The container requires write access to this directory.
-  - `settings.yml`: Basic server settings (leave untouched for container installations).
-  - `users.yml`: User definitions and credentials.
-  - `groups.yml`: User group and permission assignments.
-  - `permissionsets.yml`: Permission definitions for groups and connectors.
-  - `interface.yml`: Web interface settings.
-  - `headers.yml`: Presets for HTTP header overrides.
-  - `connectors/*.yml`: Maps local filesystem paths to URL-addressable paths in FSI Server.
-  - `renderers/*.yml`: Encoder presets for image rendering.
-
-- **`conf/nginx/`**: Configuration for the nginx container. Includes self-signed certificates for `localhost` to get you started.
-
+- **`conf/caddy/`**: Holds the `Caddyfile` for configuring the reverse proxy. Caddy automatically handles certificate management.
 - **`conf/lsyncd/`**: Configuration for the lsyncd container, used for mirror server synchronization.
-
 - **`fsi-data/assets/`**: Default location for your source images and static files. This path is configurable via the `ASSET_PATH` variable.
-
-- **`fsi-data/storage/`**: (Created on start) Stores optimized versions of your assets. This directory is mandatory for persistence and can grow to a similar size as your asset folders.
-
+- **`fsi-data/storage/`**: (Created on start) Stores optimized versions of your assets. This directory is mandatory for persistence.
 - **`fsi-data/solr-core/`**: Contains the Solr core for FSI Server's internal search. It will be recreated on restart if not present.
-
 - **`fsi-data/overlay/`**: (Created on start) Stores presets and skins for the FSI Viewer.
-
-- **`fsi-data/logs/`**: (Created on start) Central location for FSI Server, nginx, and lsyncd logs.
-
-- **`container/`**: Contains Dockerfiles for building the nginx, lsync, and benchmark containers. Modifications are typically not needed.
+- **`fsi-data/logs/`**: (Created on start) Central location for all service logs.
+- **`container/`**: Contains Dockerfiles for building the lsync and benchmark containers. Modifications are typically not needed.
 
 ### Where to Put My Pictures?
 
-For testing, you can place your images in `fsi-data/assets/images` and static files (e.g., videos, PDFs) in `fsi-data/assets/statics`. For production, store your assets in a location suitable for your backup and synchronization strategy. Then, update or create new connectors in `conf/fsi-server/connectors` to map to your asset locations.
+For testing, you can place your images in `fsi-data/assets/images` and static files in `fsi-data/assets/statics`. For production, store your assets in a location suitable for your backup and synchronization strategy. Then, update or create new connectors in `conf/fsi-server/connectors` to map to your asset locations.
 
 ### Kubernetes
 
@@ -120,7 +110,7 @@ FSI Server can also be deployed in a Kubernetes environment. Ensure that the ass
 
 ### Synchronization with `lsyncd`
 
-For high-availability setups with multiple image servers, you need to synchronize assets and configurations. This repository includes a `compose-with-mirror.yaml` file that uses **lsyncd** for this purpose.
+For high-availability setups, enable the `mirror` profile in `COMPOSE_PROFILES`. This service uses **lsyncd** to synchronize assets and configurations.
 
 **Setup:**
 1.  Ensure the target server has `ssh` and `rsync` installed.
@@ -129,36 +119,26 @@ For high-availability setups with multiple image servers, you need to synchroniz
     ssh-keygen -t ed25519 -q -N "" -o -C "fsi-sync-key@$(hostname)" -f ./conf/lsyncd/sync.key
     ssh-copy-id -i ./conf/lsyncd/sync.key user@fsi-secondary.domain.tld
     ```
-3.  Update `MIRROR_HOSTNAME` in your `.env` file.
+3.  Update `MIRROR_HOSTNAME` and `MIRROR_SYNC_KEY` in your `.env` file.
 4.  Customize synchronization paths in `conf/lsyncd/lsyncd.conf.lua` if your directory structure differs.
-5.  Restart the lsyncd container: `docker restart lsyncd` and check the logs: `docker logs -f lsyncd`.
+5.  Restart the lsyncd container: `docker compose restart lsyncd` and check the logs: `docker compose logs -f lsyncd`.
 
-**Important:** Do **not** synchronize the `storage` directory. While technically possible, it can lead to cache inconsistencies and errors on the mirror servers. Each server should build its own storage.
+**Important:** Do **not** synchronize the `storage` directory. Each server should build its own storage to avoid cache inconsistencies.
 
 ### Backup
 
 A solid backup strategy is crucial.
-- **Essential:** Back up the `conf/fsi-server` directory, which contains your license, users, and connectors.
+- **Essential:** Back up the `conf/fsi-server` directory.
 - **Recommended:** Also back up `$OVERLAY_PATH` and `$STORAGE_PATH/metadata`.
-- **Optional:** The search index (`solr-core`) does not need to be backed up as it can be rebuilt automatically.
+- **Optional:** The search index (`solr-core`) does not need to be backed up.
 
-Backing up the entire `storage` directory depends on your recovery time objectives. Rebuilding the storage for a large number of images can be time-consuming.
+### Caddy and SSL/TLS Certificates
 
-### Nginx and SSL/TLS Certificates
+The included [Caddy](https://caddyserver.com/) service provides a reverse proxy and automatic HTTPS for your FSI Server instance.
 
-The provided nginx configuration is ready for use with [Let's Encrypt](https://letsencrypt.org/).
-1.  Ensure [certbot](https://certbot.eff.org/) is installed on your host system.
-2.  Create a directory for the ACME challenge: `mkdir ./conf/nginx/acme`.
-3.  Run certbot to obtain a certificate:
-    ```shell
-    certbot certonly --webroot \
-    -w ./conf/nginx/acme \
-    -d fsi.domain.tld \
-    --agree-tos \
-    -m my@email.tld
-    ```
-4.  Mount the Let's Encrypt directory into the nginx container by updating `compose.yaml`.
-5.  Update `conf/nginx/sites/fsi-server.conf` to point to your new certificate files.
+- **Automatic SSL:** Caddy will automatically obtain and renew SSL certificates from Let's Encrypt for the domains you specify in the `SERVER_DOMAINS` variable in the `.env` file.
+- **Configuration:** The proxy behavior is defined in `conf/caddy/Caddyfile`. For most use cases, you won't need to modify this file.
+- **Local Development:** For `localhost`, Caddy generates a self-signed certificate, which may cause browser warnings.
 
 ### Bottlenecks
 
@@ -177,8 +157,7 @@ The output provides metrics for CPU, memory, and I/O performance. Use the follow
 | Type        | CPU-1 ops/sec | CPU-MAX ops/sec | MEMORY MiB/sec | I/O BW (MB/s) | I/O IOPS |
 |-------------|---------------|-----------------|----------------|---------------|----------|
 | Minimum     | 10            | 250             | 2000           | 30            | 10000    |
-| Medium      | 15            | 700             | 3000           | 100           | 25000    |
-| Recommended | 20            | 1000            | 4000           | 200           | 50000    |
+| Recommended | \>20          | \>1000          | \>4000         | \>200         | \>50000  |
 
 ---
 
