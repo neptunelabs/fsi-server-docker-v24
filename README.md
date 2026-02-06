@@ -15,7 +15,10 @@
 
 ## What is [FSI Server][FSIServer]?
 
-FSI Server dynamically generates images in various formats, sizes, and qualities in real-time. Upload a single high-resolution source image, and FSI Server will deliver variations on-demand via HTTP queries. This eliminates the need for manual image preparation. FSI Server also includes a suite of viewers for easy integration into your websites.
+FSI Server dynamically generates images in various formats, sizes, and qualities in real-time.
+Upload a single high-resolution source image, and FSI Server will deliver variations on-demand via HTTP queries.
+This eliminates not only manual image preparation, but also any pre-calculation of image sizes, qualities, and formats. No variants need to be calculated or kept on hand.
+FSI Server also includes a suite of viewers for easy integration into your websites.
 
 ## Getting Started
 
