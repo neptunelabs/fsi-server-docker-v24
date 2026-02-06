@@ -28,7 +28,7 @@ FSI Server also includes a suite of viewers for easy integration into your websi
 - **RAM:** A minimum of 8 GB is recommended, with at least 2 GB per CPU thread. For large-scale production environments, 32 GB or more is advised.
 - **Docker:** Docker Compose V2 or higher.
 
-We strongly recommend users of older Tomcat/WAR installations to upgrade to this container-based setup for simplified management and updates.
+We strongly recommend users of older installations to upgrade to this container-based setup for simplified management and updates.
 
 ### How to Use This Repository
 
