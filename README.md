@@ -85,7 +85,7 @@ The primary configuration is managed through the `.env` file. Adjust the paths a
 | `LOG_FSI_LEVEL`         | Log output verbosity for the FSI Server.                                  |
 | `FSI_MEM_LIMIT`         | Maximum memory limit for the FSI Server container (e.g., 4G).             |
 | `MIRROR_HOSTNAME`       | Domain name or IP of the mirror server.                                   |
-| `MIRROR_SSH_PORT`       | SSH port of the mirror server.                                            |
+| `MIRROR_SSH_PORT`       | The SSH port of the mirror server, usually 22.                            |
 | `MIRROR_SYNC_KEY`       | Path to the lsyncd private key for synchronization.                       |
 
 ### Directory Structure
@@ -95,14 +95,16 @@ The primary configuration is managed through the `.env` file. Adjust the paths a
 - **`conf/lsyncd/`**: Configuration for the lsyncd container, used for mirror server synchronization.
 - **`fsi-data/assets/`**: Default location for your source images and static files. This path is configurable via the `ASSET_PATH` variable.
 - **`fsi-data/storage/`**: *(created on start)* Stores optimized versions of your assets. This directory is mandatory for persistence.
-- **`fsi-data/solr-core/`**: Contains the Solr core for FSI Server's internal search. It will be recreated on restart if not present.
+- **`fsi-data/solr-core/`**: Contains the Solr core for FSI Server's internal search.
 - **`fsi-data/overlay/`**: *(created on start)* Stores presets and skins for the FSI Viewer.
 - **`fsi-data/logs/`**: *(created on start)* Central location for all service logs.
-- **`container/`**: Contains Dockerfiles for building the lsync and benchmark containers. Modifications are typically not needed.
+- **`builder/`**: Contains Dockerfiles for building the lsync and benchmark containers. Modifications are typically not needed.
 
 ### Where to put my images?
 
-For testing, you can place your images in `fsi-data/assets/images` and static files in `fsi-data/assets/statics`. For production, store your assets in a location suitable for your backup and synchronization strategy. Then, update or create new connectors in `conf/fsi-server/connectors` to map to your asset locations.
+For testing, you can place your images in `fsi-data/assets/images` and static files in `fsi-data/assets/statics`.
+For production, store your assets in a location suitable for your backup and synchronization strategy.
+Then, update or create new connectors in `conf/fsi-server/connectors` to map to your asset locations.
 
 ### Kubernetes
 
