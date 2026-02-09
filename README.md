@@ -3,7 +3,6 @@
 [![FSI Server Logo](http://fsi-site.neptunelabs.com/fsi/server?type=image&source=images%2Ffsi-logos%2Ffsi_server.png&width=250&height=86&format=png)][FSIServer]
 
 <p align="center">
-  <a href="#what-is-fsi-server"><strong>What is FSI Server?</strong></a> ·
   <a href="#getting-started"><strong>Getting Started</strong></a> ·
   <a href="#configuration"><strong>Configuration</strong></a> ·
   <a href="#advanced-topics"><strong>Advanced Topics</strong></a> ·
