@@ -68,7 +68,7 @@ The `compose.yaml` file orchestrates the necessary services. Service activation 
 
 The primary configuration is managed through the `.env` file. Adjust the paths and settings to match your environment.
 
-> __Important: The `.env` file format is not compatible with version 22. Transfer values manually, as several variable names have changed.__
+> __Important: The `.env` file format is not compatible with container setup version 22. Transfer values manually, as several variable names have changed.__
 
 | VARIABLE                | DESCRIPTION                                                               |
 |-------------------------|---------------------------------------------------------------------------|
