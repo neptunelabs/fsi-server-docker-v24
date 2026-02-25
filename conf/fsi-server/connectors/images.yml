@@ -1,6 +1,7 @@
 ---
 enabled: true
 origin:
+  # internal location within docker container
   location: "/srv/fsi/mounts/assets/images"
 conversion:
   format: "JPEG"
@@ -17,4 +18,4 @@ access:
 #    - name: "users1"
 #      permissionSet: "full"
 comment: |
-  Images Connector
+  This connector is used to place images that should be recalculated in real time.

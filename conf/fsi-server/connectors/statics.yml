@@ -1,6 +1,7 @@
 ---
 enabled: true
 origin:
+  # internal location within docker container
   location: "/srv/fsi/mounts/assets/statics"
 type: "static"
 access:
@@ -12,4 +13,4 @@ access:
 #  - name: "users1"
 #    permissionSet: "full"
 comment: |
-  Static Files
+  Store static files in this connector, e.g., video, audio, PDF, CSS, etc.

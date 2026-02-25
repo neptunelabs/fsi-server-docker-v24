@@ -1,17 +1,18 @@
 name: fsi
 
 x-logging:
-  &fsi-logging
+  &limit-log
   options:
+    # limit the combined log lines per container to 2MB
     max-size: "2000k"
   driver: json-file
 
 services:
 
-  fsi-server:
+  fsi-server-24:
     image: ${FSI_SERVER_IMAGE_NAME}:${FSI_SERVER_IMAGE_TAG}
     restart: always
-    container_name: fsi-server
+    container_name: fsi-server-24
     environment:
       - SOLR_SERVER_URI=${SOLR_SERVER_URI}
       - LOG_FSI_LEVEL=${LOG_FSI_LEVEL}
@@ -23,10 +24,10 @@ services:
       - ${STORAGE_PATH}:/srv/fsi/mounts/storage
       - ${LOG_PATH}/fsi:/srv/fsi/mounts/catalina/logs
     depends_on:
-      solr-server:
+      solr-9:
         condition: service_started
         required: false
-    logging: *fsi-logging
+    logging: *limit-log
     deploy:
       resources:
         limits:
@@ -37,17 +38,17 @@ services:
         soft: 20000
         hard: 40000
 
-  solr-server:
+  solr-9:
     image: solr:9-slim
     restart: always
-    container_name: solr
+    container_name: solr-9
     profiles: [search]
     environment:
       - JAVA_TOOL_OPTIONS=-XX:MaxRAMPercentage=75.0
     command: ["/opt/solr/bin/solr", "start", "-p", "8983", "-f", "-force"]
     volumes:
       - ${SOLR_PATH}:/var/solr/data/fsi-server
-    logging: *fsi-logging
+    logging: *limit-log
     deploy:
       resources:
         limits:
@@ -72,13 +73,13 @@ services:
     environment:
       - SERVER_DOMAINS=${SERVER_DOMAINS}
     volumes:
-      - ./conf/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./conf/caddy:/etc/caddy
       - caddy_data:/data
       - caddy_config:/config
     depends_on:
-      fsi-server:
+      fsi-server-24:
         condition: service_started
-    logging: *fsi-logging
+    logging: *limit-log
 
   lsyncd:
     build: builder/lsyncd
@@ -96,7 +97,7 @@ services:
       - ${STORAGE_PATH}:${STORAGE_PATH}:ro
       - ${LOG_PATH}/lsync:/var/log
     # - ${FSI_CONFIG_PATH}:${FSI_CONFIG_PATH}:ro
-    logging: *fsi-logging
+    logging: *limit-log
 
 volumes:
   caddy_data:
