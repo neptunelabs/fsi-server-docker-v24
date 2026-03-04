@@ -24,7 +24,7 @@ services:
       - ${STORAGE_PATH}:/srv/fsi/mounts/storage
       - ${LOG_PATH}/fsi:/srv/fsi/mounts/catalina/logs
     depends_on:
-      solr-9:
+      solr-10:
         condition: service_started
         required: false
     logging: *limit-log
@@ -38,14 +38,13 @@ services:
         soft: 20000
         hard: 40000
 
-  solr-9:
-    image: solr:9-slim
+  solr-10:
+    image: solr:10-slim
     restart: always
-    container_name: solr-9
+    container_name: solr-10
     profiles: [search]
     environment:
-      - JAVA_TOOL_OPTIONS=-XX:MaxRAMPercentage=75.0
-    command: ["/opt/solr/bin/solr", "start", "-p", "8983", "-f", "-force"]
+      - SOLR_UID=0
     volumes:
       - ${SOLR_PATH}:/var/solr/data/fsi-server
     logging: *limit-log
@@ -53,7 +52,7 @@ services:
       resources:
         limits:
           cpus: "2.0"
-          memory: 1G
+          memory: ${SOLR_MEM_LIMIT}
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8983/solr/admin/info/system || exit 1"]
       interval: 30s
