@@ -36,7 +36,7 @@ sync {
     perms = true,
     owner = true,
     _extra = {"-a", "--itemize-changes", "--temp-dir=/tmp"},
-    rsh = "ssh -q -p " .. mirror_ssh_port .. "-i /sync.key -o StrictHostKeyChecking=no"
+    rsh = "ssh -q -p " .. mirror_ssh_port .. " -i /sync.key -o StrictHostKeyChecking=no"
   }
 }
 
@@ -52,7 +52,7 @@ sync {
     perms = true,
     owner = true,
     _extra = {"-a", "--itemize-changes", "--temp-dir=/tmp"},
-    rsh = "ssh -q -p " .. mirror_ssh_port .. "-i /sync.key -o StrictHostKeyChecking=no"
+    rsh = "ssh -q -p " .. mirror_ssh_port .. " -i /sync.key -o StrictHostKeyChecking=no"
   }
 }
 
@@ -68,7 +68,7 @@ sync {
     perms = true,
     owner = true,
     _extra = {"-a", "--itemize-changes", "--temp-dir=/tmp"},
-    rsh = "ssh -q -p " .. mirror_ssh_port .. "-i /sync.key -o StrictHostKeyChecking=no"
+    rsh = "ssh -q -p " .. mirror_ssh_port .. " -i /sync.key -o StrictHostKeyChecking=no"
   }
 }
 
@@ -86,7 +86,7 @@ sync {
     perms = true,
     owner = true,
     _extra = {"-a", "--itemize-changes", "--temp-dir=/tmp"},
-    rsh = "ssh -q -p " .. mirror_ssh_port .. "-i /sync.key -o StrictHostKeyChecking=no"
+    rsh = "ssh -q -p " .. mirror_ssh_port .. " -i /sync.key -o StrictHostKeyChecking=no"
   }
 }
 --]]
