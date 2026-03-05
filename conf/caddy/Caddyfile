@@ -1,12 +1,31 @@
-{$SERVER_DOMAINS} {
-
-  import {$SERVER_TLS_CONFIG:/dev/null}
-
+(fsi_proxy) {
   reverse_proxy fsi-server-24:8080 {
     header_up Host {host}
     header_up X-Real-IP {remote_host}
   }
+}
 
-  encode zstd gzip
+(root_header) {
+  header {
+    Strict-Transport-Security "max-age=31536000"
+    X-Content-Type-Options "nosniff"
+    X-Frame-Options "SAMEORIGIN"
+    Referrer-Policy "strict-origin"
+  }
+}
+
+{$SERVER_DOMAINS} {
+
+  import {$SERVER_TLS_CONFIG:/dev/null}
+
+  handle /fsi/server/* {
+    import fsi_proxy
+  }
+
+  handle {
+    encode zstd gzip
+    import fsi_proxy
+    import root_header
+  }
 
 }
