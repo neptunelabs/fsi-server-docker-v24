@@ -43,18 +43,16 @@ services:
     restart: always
     container_name: solr-10
     profiles: [search]
-    environment:
-      - SOLR_UID=0
     volumes:
-      - ${SOLR_PATH}:/var/solr/data/fsi-server
+      - ./conf/solr/conf:/fsi-server-core/conf:ro
+      - solr_data:/var/solr
     logging: *limit-log
+    command: ["solr-precreate", "fsi-server", "/fsi-server-core"]
     deploy:
       resources:
         limits:
           cpus: "2.0"
           memory: ${SOLR_MEM_LIMIT}
-    command:
-      - solr-foreground
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8983/solr/admin/info/system || exit 1"]
       interval: 30s
@@ -73,6 +71,7 @@ services:
       - "443:443/udp"
     environment:
       - SERVER_DOMAINS=${SERVER_DOMAINS}
+      - SERVER_TLS_CONFIG=${SERVER_TLS_CONFIG}
     volumes:
       - ./conf/caddy:/etc/caddy
       - caddy_data:/data
@@ -104,3 +103,4 @@ volumes:
   session_data:
   caddy_data:
   caddy_config:
+  solr_data:
