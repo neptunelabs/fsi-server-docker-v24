@@ -16,8 +16,8 @@ services:
     environment:
       - SOLR_SERVER_URI=${SOLR_SERVER_URI}
       - LOG_FSI_LEVEL=${LOG_FSI_LEVEL}
+      - TZ=${TZ:-Europe/Berlin}
     volumes:
-      - /etc/timezone:/etc/timezone:ro
       - ${FSI_CONFIG_PATH}:/srv/fsi/mounts/config
       - ${ASSET_PATH}:/srv/fsi/mounts/assets
       - ${OVERLAY_PATH}:/srv/fsi/mounts/overlay
