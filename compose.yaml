@@ -4,18 +4,19 @@ x-logging:
   &limit-log
   options:
     # limit the combined log lines per container to 2MB
-    max-size: "2000k"
+    max-size: "2m"
   driver: json-file
 
 services:
 
   fsi-server-24:
     image: ${FSI_SERVER_IMAGE_NAME}:${FSI_SERVER_IMAGE_TAG}
-    restart: always
     container_name: fsi-server-24
+    restart: unless-stopped
+    env_file:
+      - path: default.env
+        required: true
     environment:
-      - SOLR_SERVER_URI=${SOLR_SERVER_URI}
-      - LOG_FSI_LEVEL=${LOG_FSI_LEVEL}
       - TZ=${TZ:-Europe/Berlin}
     volumes:
       - ${FSI_CONFIG_PATH}:/srv/fsi/mounts/config
@@ -23,9 +24,13 @@ services:
       - ${OVERLAY_PATH}:/srv/fsi/mounts/overlay
       - ${STORAGE_PATH}:/srv/fsi/mounts/storage
       - ${LOG_PATH}/fsi:/srv/fsi/mounts/catalina/logs
+      - fsi_session_data:/srv/fsi/mounts/sessions
+    networks:
+      - fsi_net_frontend
+      - fsi_net_backend
     depends_on:
       solr-10:
-        condition: service_started
+        condition: service_healthy
         required: false
     logging: *limit-log
     deploy:
@@ -37,15 +42,21 @@ services:
       nofile:
         soft: 20000
         hard: 40000
+    stop_grace_period: 1m
 
   solr-10:
     image: solr:10-slim
-    restart: always
     container_name: solr-10
+    restart: unless-stopped
     profiles: [search]
+    env_file:
+      - path: default.env
+        required: true
     volumes:
       - ./conf/solr/conf:/fsi-server-core/conf:ro
       - solr_data:/var/solr
+    networks:
+      - fsi_net_backend
     logging: *limit-log
     command: ["solr-precreate", "fsi-server", "/fsi-server-core"]
     deploy:
@@ -63,19 +74,21 @@ services:
   caddy:
     image: caddy:2-alpine
     container_name: caddy
+    restart: unless-stopped
     profiles: [proxy]
-    restart: always
-    ports:
-      - "80:80"
-      - "443:443"
-      - "443:443/udp"
-    environment:
-      - SERVER_DOMAINS=${SERVER_DOMAINS}
-      - SERVER_TLS_CONFIG=${SERVER_TLS_CONFIG}
+    env_file:
+      - path: default.env
+        required: true
     volumes:
       - ./conf/caddy:/etc/caddy
       - caddy_data:/data
       - caddy_config:/config
+    networks:
+      - fsi_net_frontend
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
     depends_on:
       fsi-server-24:
         condition: service_started
@@ -83,11 +96,12 @@ services:
 
   lsyncd:
     build: builder/lsyncd
-    profiles: [mirror]
-    restart: always
     container_name: lsyncd
+    restart: unless-stopped
+    profiles: [mirror]
     env_file:
-      - .env
+      - path: default.env
+        required: true
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - ./conf/lsyncd/lsyncd.conf.lua:/config/lsyncd.lua:ro
@@ -96,11 +110,24 @@ services:
       - ${OVERLAY_PATH}:${OVERLAY_PATH}:ro
       - ${STORAGE_PATH}:${STORAGE_PATH}:ro
       - ${LOG_PATH}/lsync:/var/log
-    # - ${FSI_CONFIG_PATH}:${FSI_CONFIG_PATH}:ro
+    # - ${FSI_CONFIG_PATH}:${FSI_CONFIG_PATH}:ro # Be careful when synchronizing this path.
+    networks:
+      - fsi_net_sync
     logging: *limit-log
 
 volumes:
-  session_data:
+  fsi_session_data:
   caddy_data:
   caddy_config:
   solr_data:
+
+networks:
+  fsi_net_frontend:
+    name: fsi_net_frontend
+    driver: bridge
+  fsi_net_backend:
+    name: fsi_net_backend
+    driver: bridge
+  fsi_net_sync:
+    name: fsi_net_sync
+    driver: bridge

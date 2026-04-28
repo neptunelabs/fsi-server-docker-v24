@@ -1,6 +1,5 @@
 (fsi_proxy) {
   reverse_proxy fsi-server-24:8080 {
-    header_up Host {host}
     header_up X-Real-IP {remote_host}
   }
 }
