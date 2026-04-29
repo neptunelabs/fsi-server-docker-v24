@@ -14,7 +14,7 @@ services:
     container_name: fsi-server-24
     restart: unless-stopped
     env_file:
-      - path: default.env
+      - path: .env
         required: true
     environment:
       - TZ=${TZ:-Europe/Berlin}
@@ -50,7 +50,7 @@ services:
     restart: unless-stopped
     profiles: [search]
     env_file:
-      - path: default.env
+      - path: .env
         required: true
     volumes:
       - ./conf/solr/conf:/fsi-server-core/conf:ro
@@ -77,7 +77,7 @@ services:
     restart: unless-stopped
     profiles: [proxy]
     env_file:
-      - path: default.env
+      - path: .env
         required: true
     volumes:
       - ./conf/caddy:/etc/caddy
@@ -100,7 +100,7 @@ services:
     restart: unless-stopped
     profiles: [mirror]
     env_file:
-      - path: default.env
+      - path: .env
         required: true
     volumes:
       - /etc/timezone:/etc/timezone:ro
