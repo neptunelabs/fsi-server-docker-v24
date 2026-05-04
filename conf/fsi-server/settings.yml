@@ -4,15 +4,16 @@ application:
   storage: "/srv/fsi/mounts/storage"
   maxCPU: "auto"
   maxIO: "auto"
-  jmx: true
-cache:
-  enabled: true
+  memoryFileIndex: true
 limits:
   defaultRenderer: "default"
   defaultWidth: 400
   defaultHeight: 300
   maxWidth: 5120
   maxHeight: 2880
+scanner:
+  enabled: true
+  useMagicBytes: false
 search:
   enabled: true
   type: "solr"
