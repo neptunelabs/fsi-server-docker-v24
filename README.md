@@ -24,12 +24,23 @@ FSI Server also includes a suite of viewer components for easy integration into 
 ### Requirements
 
 - **Architecture:** x86-64
-- **RAM:** A minimum of 8 GB is recommended, with at least 2 GB per CPU thread. For large-scale production environments, 32 GB or more is advised.
-- **Docker:** Docker Compose V2 or higher.
-
-We strongly recommend users of older installations to upgrade to this container-based setup for simplified management and updates.
+- **RAM:** A minimum of 8 GB is recommended, with at least 2 GB per CPU thread. For large-scale production environments, 32GB - 64GB is advised.
+- **Docker:** and Docker Compose V2 or higher.
 
 ### How to Use This Repository
+
+Copy the '.env.example' file to '.env' and customize the variables to suit your needs.
+However, if you're using the default settings and just testing, you don't need to make any changes.
+
+We recommend changing the value for `SERVER_DOMAINS` to match one of your domains and then accessing
+the web interface via that domain once the server has started.
+
+If you wish to run FSI Server directly behind an HTTP reverse proxy,
+you can disable the included Caddy proxy by removing the value `proxy` from the `COMPOSE_PROFILES` variable.
+
+You can find out more about configuration below.
+
+### Starting Server
 
 This repository provides a `docker-compose` setup for running FSI Server.
 
@@ -46,6 +57,15 @@ docker compose down
 ```
 
 For more information on Docker, please refer to the [official documentation](https://docs.docker.com/compose/).
+
+### Upgrade
+
+For users upgrading from V22.x, we recommend that you do not transfer the .env file,
+but instead adapt the one provided here accordingly.
+Some variable names have changed.
+The `conf` directory no longer contains any configuration files for `nginx`,
+as this has been removed in favour of `caddy`.
+Apache Solr has been updated to version 10, which is not compatible with the files from Solr 6.
 
 ### Web Interface
 
@@ -79,11 +99,11 @@ The primary configuration is managed through the `.env` file. Adjust the paths a
 | `ASSET_PATH`            | Filesystem path for your source images and static assets.                 |
 | `STORAGE_PATH`          | Filesystem path for optimized, real-time-ready images.                    |
 | `OVERLAY_PATH`          | Configuration folder for FSI Viewer settings.                             |
-| `SOLR_PATH`             | Path for the FSI Server Solr core index.                                  |
 | `SOLR_SERVER_URI`       | HTTP path to the Apache Solr server.                                      |
 | `LOG_PATH`              | Central directory for all log files.                                      |
 | `LOG_FSI_LEVEL`         | Log output verbosity for the FSI Server.                                  |
 | `FSI_MEM_LIMIT`         | Maximum memory limit for the FSI Server container (e.g., 4G).             |
+| `SOLR_MEM_LIMIT`        | Maximum memory limit for the Apache Solr container (e.g., 2G).             |
 | `MIRROR_HOSTNAME`       | Domain name or IP of the mirror server.                                   |
 | `MIRROR_SSH_PORT`       | The SSH port of the mirror server, usually 22.                            |
 | `MIRROR_SYNC_KEY`       | Path to the lsyncd private key for synchronization.                       |
