@@ -132,6 +132,66 @@ FSI Server can also be deployed in a Kubernetes environment. Ensure that the ass
 
 ---
 
+## Running in production
+
+For productive operation with millions of images, a few settings should be changed.
+All production data should reside outside the repository.
+It should be configured so that the loss of the repository and the Docker images does not pose a problem.
+
+### The `conf` directory should be moved to a different location
+
+To ensure a quick restart in case of errors, updates, repository changes, and other modifications,
+the `conf` directory should be moved.
+This can be done by changing the path of `FSI_CONFIG_PATH` in the `.env` file to an absolute directory
+outside the repository, e.g., `/data/conf/fsi-server`.
+
+### Make sure the assets (images) are located outside the repository
+
+Production images and assets can be easily addressed via the `ASSET_PATH` variable.
+This variable is mounted to `/srv/fsi/mounts/assets` within the container in the `compose.yaml` file.
+
+When you create new connectors in `conf/fsi-server/connectors`,
+this path effectively serves as the basis.
+For example, you set the path to `/data/assets` and have two directories within it,
+each pointing to a connector: `brands` and `logos`.
+In the connectors, which you can name as you wish,
+the `origin.location` path will then be `/srv/fsi/mounts/assets/brands` and `/srv/fsi/mounts/assets/logos`,
+respectively.
+
+### The storage (the internal image cache) should be outsourced
+
+The storage should definitely be located outside the repository.
+Ideally, `STORAGE_PATH` should be set to an absolute, block-oriented device.
+Under no circumstances should the storage be set to a network device.
+
+The speed of FSI Server is largely determined by the I/O performance of the storage.
+If you are unsure, run a benchmark (see below).
+
+### Adjusting `max_user_watches` under Linux
+
+FSI Server monitors source directories using the Linux inotify subsystem.
+
+By default, the maximum number of files and directories that can be monitored is limited.
+
+You should definitely adjust this value if you have more than 8000 directories.
+
+You can determine the current value as follows:
+
+```shell
+`cat /proc/sys/fs/inotify/max_user_watches`
+
+```
+
+Increase the value by adding or modifying the following line in the `/etc/sysctl.conf` file, for example:
+
+```shell
+`fs.inotify.max_user_watches=524288`
+
+```
+
+Adjust the value according to the number of source directories.
+
+
 ## Advanced Topics
 
 ### Synchronization with `lsyncd`
