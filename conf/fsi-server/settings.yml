@@ -14,6 +14,9 @@ limits:
 scanner:
   enabled: true
   useMagicBytes: false
+  fileScanInterval: 6
+  minScanPause: 15000
+  maxScanPause: 60000
 search:
   enabled: true
   type: "solr"
