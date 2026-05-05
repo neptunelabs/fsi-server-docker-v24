@@ -178,15 +178,14 @@ You should definitely adjust this value if you have more than 8000 directories.
 You can determine the current value as follows:
 
 ```shell
-`cat /proc/sys/fs/inotify/max_user_watches`
+cat /proc/sys/fs/inotify/max_user_watches
 
 ```
 
 Increase the value by adding or modifying the following line in the `/etc/sysctl.conf` file, for example:
 
 ```shell
-`fs.inotify.max_user_watches=524288`
-
+fs.inotify.max_user_watches=524288
 ```
 
 Adjust the value according to the number of source directories.
