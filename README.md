@@ -24,12 +24,12 @@ FSI Server also includes a suite of viewer components for easy integration into 
 ### Requirements
 
 - **Architecture:** x86-64
-- **RAM:** A minimum of 8 GB is recommended, with at least 2 GB per CPU thread. For large-scale production environments, 32GB - 64GB is advised.
+- **RAM:** A minimum of 4 GB is recommended, with at least 2 GB available per CPU thread. 16 GB is sufficient for up to 1 million images; for large production environments, up to 64 GB is recommended. For technical reasons (G1 Garbage Collector), any more than this is not advisable.
 - **Docker:** and Docker Compose V2 or higher.
 
 ### How to Use This Repository
 
-Copy the '.env.example' file to '.env' and customize the variables to suit your needs.
+**Copy the '.env.example' file to '.env'** and customize the variables to suit your needs.
 However, if you're using the default settings and just testing, you don't need to make any changes.
 
 We recommend changing the value for `SERVER_DOMAINS` to match one of your domains and then accessing
@@ -37,6 +37,8 @@ the web interface via that domain once the server has started.
 
 If you wish to run FSI Server directly behind an HTTP reverse proxy,
 you can disable the included Caddy proxy by removing the value `proxy` from the `COMPOSE_PROFILES` variable.
+
+If this value is not configured, the server's interface can be accessed via https://localhost/ with a self-signed certificate.
 
 You can find out more about configuration below.
 
@@ -71,7 +73,7 @@ Apache Solr has been updated to version 10, which is not compatible with the fil
 
 Once the containers are running, you can access the FSI Server web interface. By default, it's available at:
 
-- **https://localhost/** (with a self-signed certificate)
+`https://localhost/`
 
 ---
 
