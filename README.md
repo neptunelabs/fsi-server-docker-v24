@@ -73,7 +73,7 @@ Apache Solr has been updated to version 10, which is not compatible with the fil
 
 Once the containers are running, you can access the FSI Server web interface. By default, it's available at:
 
-`https://localhost/`
+https://localhost/
 
 ---
 
@@ -112,15 +112,15 @@ The primary configuration is managed through the `.env` file. Adjust the paths a
 
 ### Directory Structure
 
-- **`conf/fsi-server/`**: Contains all FSI Server settings. The container requires write access to this directory.
-- **`conf/caddy/`**: Holds the `Caddyfile` for configuring the reverse proxy. Caddy automatically handles certificate management.
-- **`conf/lsyncd/`**: Configuration for the lsyncd container, used for mirror server synchronization.
-- **`fsi-data/assets/`**: Default location for your source images and static files. This path is configurable via the `ASSET_PATH` variable.
-- **`fsi-data/storage/`**: *(created on start)* Stores optimized versions of your assets. This directory is mandatory for persistence.
-- **`fsi-data/solr-core/`**: Contains the Solr core for FSI Server's internal search.
-- **`fsi-data/overlay/`**: *(created on start)* Stores presets and skins for the FSI Viewer.
-- **`fsi-data/logs/`**: *(created on start)* Central location for all service logs.
 - **`builder/`**: Contains Dockerfiles for building the lsync and benchmark containers. Modifications are typically not needed.
+- **`conf/caddy/`**: Holds the `Caddyfile` for configuring the reverse proxy. Caddy automatically handles certificate management.
+- **`conf/fsi-server/`**: Contains all FSI Server settings. The container requires write access to this directory.
+- **`conf/lsyncd/`**: Configuration for the lsyncd container, used for mirror server synchronization.
+- **`conf/solr/`**: Configuration for the Apache Solr container. No adjustments are required here.
+- **`fsi-data/assets/`**: Default location for your source images and static files. This path is configurable via the `ASSET_PATH` variable.
+- **`fsi-data/logs/`**: *(created on start)* Central location for all service logs.
+- **`fsi-data/overlay/`**: *(created on start)* Stores presets and skins for the FSI Viewer.
+- **`fsi-data/storage/`**: *(created on start)* Stores optimized versions of your assets. This directory is mandatory for persistence.
 
 ### Where to put my images?
 
@@ -164,7 +164,8 @@ respectively.
 
 The storage should definitely be located outside the repository.
 Ideally, `STORAGE_PATH` should be set to an absolute, block-oriented device.
-Under no circumstances should the storage be set to a network device.
+
+> Under no circumstances should the storage be set to a network device.
 
 The speed of FSI Server is largely determined by the I/O performance of the storage.
 If you are unsure, run a benchmark (see below).
@@ -201,7 +202,7 @@ For high-availability setups, enable the `mirror` profile in `COMPOSE_PROFILES`.
 
 **Setup:**
 1.  Ensure the target server has `ssh` and `rsync` installed.
-2.  Generate an SSH key for authentication.
+2.  Create and copy an SSH key for authentication.
     ```shell
     ssh-keygen -t ed25519 -q -N "" -o -C "fsi-sync-key@$(hostname)" -f ./conf/lsyncd/sync.key
     ssh-copy-id -i ./conf/lsyncd/sync.key user@fsi-secondary.domain.tld
