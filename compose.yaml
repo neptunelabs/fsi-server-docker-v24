@@ -19,11 +19,11 @@ services:
     environment:
       - TZ=${TZ:-Europe/Berlin}
     volumes:
-      - ${FSI_CONFIG_PATH}:/srv/fsi/mounts/config
-      - ${ASSET_PATH}:/connectors
-      - ${OVERLAY_PATH}:/srv/fsi/mounts/overlay
-      - ${STORAGE_PATH}:/srv/fsi/mounts/storage
-      - ${LOG_PATH}/fsi:/srv/fsi/mounts/catalina/logs
+      - ${FSI_CONFIG_PATH:./conf/fsi-server}:/srv/fsi/mounts/config
+      - ${ASSET_PATH:./fsi-data/assets}:/connectors
+      - ${STORAGE_PATH:./fsi-data/storage}:/srv/fsi/mounts/storage
+      - ${OVERLAY_PATH:./fsi-data/overlay}:/srv/fsi/mounts/overlay
+      - ${LOG_PATH:./fsi-data/logs}/fsi:/srv/fsi/mounts/catalina/logs
       - fsi_session_data:/srv/fsi/mounts/sessions
     networks:
       - fsi_net_frontend
@@ -105,12 +105,12 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - ./conf/lsyncd/lsyncd.conf.lua:/config/lsyncd.lua:ro
-      - ${MIRROR_SYNC_KEY}:/sync.key:ro
-      - ${ASSET_PATH}:${ASSET_PATH}:ro
-      - ${OVERLAY_PATH}:${OVERLAY_PATH}:ro
-      - ${STORAGE_PATH}:${STORAGE_PATH}:ro
-      - ${LOG_PATH}/lsync:/var/log
-    # - ${FSI_CONFIG_PATH}:${FSI_CONFIG_PATH}:ro # Be careful when synchronizing this path.
+      - ${MIRROR_SYNC_KEY:./conf/lsyncd/sync.key}:/sync.key:ro
+      - ${ASSET_PATH:./fsi-data/assets}:${ASSET_PATH}:ro
+      - ${STORAGE_PATH:./fsi-data/storage}:${STORAGE_PATH}:ro
+      - ${OVERLAY_PATH:./fsi-data/overlay}:${OVERLAY_PATH}:ro
+      - ${LOG_PATH:./fsi-data/logs}/lsync:/var/log
+    # - ${FSI_CONFIG_PATH:./conf/fsi-server}:${FSI_CONFIG_PATH}:ro # Be careful when synchronizing this path.
     networks:
       - fsi_net_sync
     logging: *limit-log
@@ -131,3 +131,13 @@ networks:
   fsi_net_sync:
     name: fsi_net_sync
     driver: bridge
+
+environment:
+  FSI_SERVER_IMAGE_NAME:
+    required: true
+  FSI_SERVER_IMAGE_TAG:
+    required: true
+  FSI_MEM_LIMIT:
+    required: true
+  SOLR_MEM_LIMIT:
+    required: true
