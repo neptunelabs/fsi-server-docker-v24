@@ -23,7 +23,7 @@ services:
       - ${CONNECTOR_PATH:-./connectors}:/connectors
       - ${STORAGE_PATH:-./fsi-data/storage}:/srv/fsi/mounts/storage
       - ${OVERLAY_PATH:-./fsi-data/overlay}:/srv/fsi/mounts/overlay
-      - ${LOG_PATH:-./fsi-data/logs/fsi}:/srv/fsi/mounts/catalina/logs
+      - ${LOG_PATH:-./fsi-data/logs}/fsi:/srv/fsi/mounts/catalina/logs
       - fsi_session_data:/srv/fsi/mounts/sessions
     networks:
       - fsi_net_frontend
@@ -109,7 +109,7 @@ services:
       - ${CONNECTOR_PATH:-./connectors}:${CONNECTOR_PATH:-./connectors}:ro
       - ${STORAGE_PATH:-./fsi-data/storage}:${STORAGE_PATH:-./fsi-data/storage}:ro
       - ${OVERLAY_PATH:-./fsi-data/overlay}:${OVERLAY_PATH:-./fsi-data/overlay}:ro
-      - ${LOG_PATH:-./fsi-data/logs/lsync}:/var/log
+      - ${LOG_PATH:-./fsi-data/logs}/lsync:/var/log
     # - ${FSI_CONFIG_PATH:./conf/fsi-server}:${FSI_CONFIG_PATH}:ro # Be careful when synchronizing this path.
     networks:
       - fsi_net_sync
