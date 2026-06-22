@@ -1,10 +1,8 @@
 .idea
 .vscode
 *.iml
-fsi-data/catalina
-fsi-data/overlay
-fsi-data/logs
-fsi-data/storage
-fsi-data/solr-core/fsi-server/data
+fsi-data/overlay/**
+fsi-data/logs/**
+fsi-data/storage/**
 **/bench
 conf/fsi-server/userprefs
