@@ -98,7 +98,7 @@ The primary configuration is managed through the `.env` file. Adjust the paths a
 | `FSI_SERVER_IMAGE_NAME` | The FSI Server container repository                                       |
 | `FSI_SERVER_IMAGE_TAG`  | The FSI Server version to use. (e.g. 24.07)                               |
 | `FSI_CONFIG_PATH`       | Filesystem path for FSI Server configuration.                             |
-| `ASSET_PATH`            | Filesystem path for your source images and static assets.                 |
+| `CONNECTOR_PATH`        | Filesystem path for your source images and static assets.                 |
 | `STORAGE_PATH`          | Filesystem path for optimized, real-time-ready images.                    |
 | `OVERLAY_PATH`          | Configuration folder for FSI Viewer settings.                             |
 | `SOLR_SERVER_URI`       | HTTP path to the Apache Solr server.                                      |
@@ -117,14 +117,14 @@ The primary configuration is managed through the `.env` file. Adjust the paths a
 - **`conf/fsi-server/`**: Contains all FSI Server settings. The container requires write access to this directory.
 - **`conf/lsyncd/`**: Configuration for the lsyncd container, used for mirror server synchronization.
 - **`conf/solr/`**: Configuration for the Apache Solr container. No adjustments are required here.
-- **`fsi-data/assets/`**: Default location for your source images and static files. This path is configurable via the `ASSET_PATH` variable.
+- **`connectors/`**: Default location for your source images and static files. This path is configurable via the `CONNECTOR_PATH` variable.
 - **`fsi-data/logs/`**: *(created on start)* Central location for all service logs.
 - **`fsi-data/overlay/`**: *(created on start)* Stores presets and skins for the FSI Viewer.
 - **`fsi-data/storage/`**: *(created on start)* Stores optimized versions of your assets. This directory is mandatory for persistence.
 
 ### Where to put my images?
 
-For testing, you can place your images in `fsi-data/assets/images` and static files in `fsi-data/assets/statics`.
+For testing, you can place your images in `connectors/images` and static files in `connectors/statics`.
 For production, store your assets in a location suitable for your backup and synchronization strategy.
 Then, update or create new connectors in `conf/fsi-server/connectors` to map to your asset locations.
 
@@ -149,15 +149,15 @@ outside the repository, e.g., `/data/conf/fsi-server`.
 
 ### Make sure the assets (images) are located outside the repository
 
-Production images and assets can be easily addressed via the `ASSET_PATH` variable.
-This variable is mounted to `/srv/fsi/mounts/assets` within the container in the `compose.yaml` file.
+Production images and assets can be easily addressed via the `CONNECTOR_PATH` variable.
+This variable is mounted to `/connectors` within the container in the `compose.yaml` file.
 
 When you create new connectors in `conf/fsi-server/connectors`,
 this path effectively serves as the basis.
 For example, you set the path to `/data/assets` and have two directories within it,
 each pointing to a connector: `brands` and `logos`.
 In the connectors, which you can name as you wish,
-the `origin.location` path will then be `/srv/fsi/mounts/assets/brands` and `/srv/fsi/mounts/assets/logos`,
+the `origin.location` path will then be `/connectors/brands` and `/connectors/logos`,
 respectively.
 
 ### The storage (the internal image cache) should be outsourced

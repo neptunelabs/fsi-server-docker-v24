@@ -5,6 +5,7 @@ x-logging:
   options:
     # limit the combined log lines per container to 2MB
     max-size: "2m"
+    max-file: "5"
   driver: json-file
 
 services:

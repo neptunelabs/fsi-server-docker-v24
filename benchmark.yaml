@@ -3,6 +3,6 @@ services:
   benchmark:
     build: builder/benchmark
     volumes:
-      - ${ASSET_PATH}:/bench/assets
+      - ${CONNECTOR_PATH:?Missing .env file. Please create one from .env.example}:/bench/assets
       - ${STORAGE_PATH}:/bench/storage
     privileged: true
