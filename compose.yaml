@@ -20,7 +20,7 @@ services:
       - TZ=${TZ:-Europe/Berlin}
     volumes:
       - ${FSI_CONFIG_PATH}:/srv/fsi/mounts/config
-      - ${ASSET_PATH}:/srv/fsi/mounts/assets
+      - ${ASSET_PATH}:/connectors
       - ${OVERLAY_PATH}:/srv/fsi/mounts/overlay
       - ${STORAGE_PATH}:/srv/fsi/mounts/storage
       - ${LOG_PATH}/fsi:/srv/fsi/mounts/catalina/logs

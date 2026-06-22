@@ -2,7 +2,7 @@
 enabled: true
 origin:
   # internal location within docker container
-  location: "/srv/fsi/mounts/assets/statics"
+  location: "/connectors/statics"
 type: "static"
 access:
   group:

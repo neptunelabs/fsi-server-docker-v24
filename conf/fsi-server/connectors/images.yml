@@ -2,7 +2,7 @@
 enabled: true
 origin:
   # internal location within docker container
-  location: "/srv/fsi/mounts/assets/images"
+  location: "/connectors/images"
 conversion:
   format: "JPEG"
   quality: 95
