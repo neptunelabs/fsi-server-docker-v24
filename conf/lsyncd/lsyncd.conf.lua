@@ -4,8 +4,8 @@ assert(mirror_host, "MIRROR_HOSTNAME env variable is not set")
 local mirror_ssh_port = os.getenv("MIRROR_SSH_PORT")
 assert(mirror_ssh_port, "MIRROR_SSH_PORT env variable is not set")
 
-local asset_path = os.getenv("ASSET_PATH")
-assert(asset_path, "ASSET_PATH env variable is not set")
+local connector_path = os.getenv("CONNECTOR_PATH")
+assert(connector_path, "CONNECTOR_PATH env variable is not set")
 
 local storage_path = os.getenv("STORAGE_PATH")
 assert(storage_path, "STORAGE_PATH env variable is not set")
@@ -26,8 +26,8 @@ settings {
 
 sync {
   default.rsync,
-  source = asset_path,
-  target = mirror_host .. ":" .. asset_path,
+  source = connector_path,
+  target = mirror_host .. ":" .. connector_path,
   delay = 120,
   maxProcesses = 1,
   rsync = {

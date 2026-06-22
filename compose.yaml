@@ -105,9 +105,9 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - ./conf/lsyncd/lsyncd.conf.lua:/config/lsyncd.lua:ro
       - ${MIRROR_SYNC_KEY:-./conf/lsyncd/sync.key}:/sync.key:ro
-      - ${CONNECTOR_PATH:-./connectors}:${ASSET_PATH}:ro
-      - ${STORAGE_PATH:-./fsi-data/storage}:${STORAGE_PATH}:ro
-      - ${OVERLAY_PATH:-./fsi-data/overlay}:${OVERLAY_PATH}:ro
+      - ${CONNECTOR_PATH:-./connectors}:${CONNECTOR_PATH:-./connectors}:ro
+      - ${STORAGE_PATH:-./fsi-data/storage}:${STORAGE_PATH:-./fsi-data/storage}:ro
+      - ${OVERLAY_PATH:-./fsi-data/overlay}:${OVERLAY_PATH:-./fsi-data/overlay}:ro
       - ${LOG_PATH:-./fsi-data/logs/lsync}:/var/log
     # - ${FSI_CONFIG_PATH:./conf/fsi-server}:${FSI_CONFIG_PATH}:ro # Be careful when synchronizing this path.
     networks:
