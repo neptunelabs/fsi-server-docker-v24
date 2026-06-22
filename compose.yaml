@@ -7,29 +7,19 @@ x-logging:
     max-size: "2m"
   driver: json-file
 
-environment:
-  FSI_SERVER_IMAGE_NAME:
-    required: true
-  FSI_SERVER_IMAGE_TAG:
-    required: true
-  FSI_MEM_LIMIT:
-    required: true
-  SOLR_MEM_LIMIT:
-    required: true
-
 services:
   fsi-server-24:
-    image: ${FSI_SERVER_IMAGE_NAME}:${FSI_SERVER_IMAGE_TAG}
+    image: ${FSI_SERVER_IMAGE_NAME:?Missing .env file. Please create one from .env.example}:${FSI_SERVER_IMAGE_TAG}
     container_name: fsi-server-24
     restart: unless-stopped
     env_file:
       - path: .env
         required: true
     environment:
-      - TZ=${TZ:-Europe/Berlin}
+      - TZ=${TZ:-Etc/UTC}
     volumes:
       - ${FSI_CONFIG_PATH:-./conf/fsi-server}:/srv/fsi/mounts/config
-      - ${ASSET_PATH:-./fsi-data/assets}:/connectors
+      - ${CONNECTOR_PATH:-./connectors}:/connectors
       - ${STORAGE_PATH:-./fsi-data/storage}:/srv/fsi/mounts/storage
       - ${OVERLAY_PATH:-./fsi-data/overlay}:/srv/fsi/mounts/overlay
       - ${LOG_PATH:-./fsi-data/logs/fsi}:/srv/fsi/mounts/catalina/logs
@@ -115,7 +105,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - ./conf/lsyncd/lsyncd.conf.lua:/config/lsyncd.lua:ro
       - ${MIRROR_SYNC_KEY:-./conf/lsyncd/sync.key}:/sync.key:ro
-      - ${ASSET_PATH:-./fsi-data/assets}:${ASSET_PATH}:ro
+      - ${CONNECTOR_PATH:-./connectors}:${ASSET_PATH}:ro
       - ${STORAGE_PATH:-./fsi-data/storage}:${STORAGE_PATH}:ro
       - ${OVERLAY_PATH:-./fsi-data/overlay}:${OVERLAY_PATH}:ro
       - ${LOG_PATH:-./fsi-data/logs/lsync}:/var/log
