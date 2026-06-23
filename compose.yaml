@@ -36,7 +36,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: ${FSI_MEM_LIMIT}
+          memory: ${FSI_MEM_LIMIT:-4G}
     ulimits:
       nproc: 65535
       nofile:
@@ -63,7 +63,7 @@ services:
       resources:
         limits:
           cpus: "2.0"
-          memory: ${SOLR_MEM_LIMIT}
+          memory: ${SOLR_MEM_LIMIT:-2G}
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8983/solr/admin/info/system || exit 1"]
       interval: 30s
