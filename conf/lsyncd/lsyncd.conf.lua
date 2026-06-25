@@ -13,9 +13,9 @@ assert(storage_path, "STORAGE_PATH env variable is not set")
 local overlay_path = os.getenv("OVERLAY_PATH")
 assert(overlay_path, "OVERLAY_PATH env variable is not set")
 
-local fsi_config_path = os.getenv("FSI_CONFIG_PATH")
-assert(fsi_config_path, "FSI_CONFIG_PATH env variable is not set")
-
+local config_path = os.getenv("CONFIG_BASE_PATH")
+assert(config_path, "CONFIG_BASE_PATH env variable is not set")
+fsi_config_path = config_path .. "/fsi-server"
 
 settings {
   logfile = "/var/log/lsyncd.log",

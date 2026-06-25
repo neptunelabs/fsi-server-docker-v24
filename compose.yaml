@@ -19,7 +19,7 @@ services:
     environment:
       - TZ=${TZ:-Etc/UTC}
     volumes:
-      - ${FSI_CONFIG_PATH:-./conf/fsi-server}:/srv/fsi/mounts/config
+      - ${CONFIG_BASE_PATH:-./conf}/fsi-server:/srv/fsi/mounts/config
       - ${CONNECTOR_PATH:-./connectors}:/connectors
       - ${STORAGE_PATH:-./fsi-data/storage}:/srv/fsi/mounts/storage
       - ${OVERLAY_PATH:-./fsi-data/overlay}:/srv/fsi/mounts/overlay
@@ -53,7 +53,7 @@ services:
       - path: .env
         required: true
     volumes:
-      - ./conf/solr/conf:/fsi-server-core/conf:ro
+      - ${CONFIG_BASE_PATH:-./conf}/solr/conf:/fsi-server-core/conf:ro
       - solr_data:/var/solr
     networks:
       - fsi_net_backend
@@ -80,7 +80,7 @@ services:
       - path: .env
         required: true
     volumes:
-      - ./conf/caddy:/etc/caddy
+      - ${CONFIG_BASE_PATH:-./conf}/caddy:/etc/caddy
       - caddy_data:/data
       - caddy_config:/config
     networks:
@@ -104,13 +104,13 @@ services:
         required: true
     volumes:
       - /etc/timezone:/etc/timezone:ro
-      - ./conf/lsyncd/lsyncd.conf.lua:/config/lsyncd.lua:ro
+      - ${CONFIG_BASE_PATH:-./conf}/lsyncd/lsyncd.conf.lua:/config/lsyncd.lua:ro
       - ${MIRROR_SYNC_KEY:-./conf/lsyncd/sync.key}:/sync.key:ro
       - ${CONNECTOR_PATH:-./connectors}:${CONNECTOR_PATH:-./connectors}:ro
       - ${STORAGE_PATH:-./fsi-data/storage}:${STORAGE_PATH:-./fsi-data/storage}:ro
       - ${OVERLAY_PATH:-./fsi-data/overlay}:${OVERLAY_PATH:-./fsi-data/overlay}:ro
       - ${LOG_PATH:-./fsi-data/logs}/lsync:/var/log
-    # - ${FSI_CONFIG_PATH:./conf/fsi-server}:${FSI_CONFIG_PATH}:ro # Be careful when synchronizing this path.
+    # - ${CONFIG_BASE_PATH:./conf}/fsi-server:${CONFIG_BASE_PATH:./conf}/fsi-server:ro # Be careful when synchronizing this path.
     networks:
       - fsi_net_sync
     logging: *limit-log
