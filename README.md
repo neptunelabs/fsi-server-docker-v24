@@ -97,7 +97,7 @@ The primary configuration is managed through the `.env` file. Adjust the paths a
 | `SERVER_DOMAINS`        | Your public domain(s). Caddy will manage SSL for these.                   |
 | `FSI_SERVER_IMAGE_NAME` | The FSI Server container repository                                       |
 | `FSI_SERVER_IMAGE_TAG`  | The FSI Server version to use. (e.g. 24.07)                               |
-| `FSI_CONFIG_PATH`       | Filesystem path for FSI Server configuration.                             |
+| `CONFIG_BASE_PATH`      | Filesystem path for configuration.                                        |
 | `CONNECTOR_PATH`        | Filesystem path for your source images and static assets.                 |
 | `STORAGE_PATH`          | Filesystem path for optimized, real-time-ready images.                    |
 | `OVERLAY_PATH`          | Configuration folder for FSI Viewer settings.                             |
@@ -105,7 +105,7 @@ The primary configuration is managed through the `.env` file. Adjust the paths a
 | `LOG_PATH`              | Central directory for all log files.                                      |
 | `LOG_FSI_LEVEL`         | Log output verbosity for the FSI Server.                                  |
 | `FSI_MEM_LIMIT`         | Maximum memory limit for the FSI Server container (e.g., 4G).             |
-| `SOLR_MEM_LIMIT`        | Maximum memory limit for the Apache Solr container (e.g., 2G).             |
+| `SOLR_MEM_LIMIT`        | Maximum memory limit for the Apache Solr container (e.g., 2G).            |
 | `MIRROR_HOSTNAME`       | Domain name or IP of the mirror server.                                   |
 | `MIRROR_SSH_PORT`       | The SSH port of the mirror server, usually 22.                            |
 | `MIRROR_SYNC_KEY`       | Path to the lsyncd private key for synchronization.                       |
