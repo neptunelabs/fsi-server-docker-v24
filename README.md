@@ -144,7 +144,7 @@ It should be configured so that the loss of the repository and the Docker images
 
 To ensure a quick restart in case of errors, updates, repository changes, and other modifications,
 the `conf` directory should be moved.
-This can be done by changing the path of `FSI_CONFIG_PATH` in the `.env` file to an absolute directory
+This can be done by changing the path of `CONFIG_BASE_PATH` in the `.env` file to an absolute directory
 outside the repository, e.g., `/data/conf/fsi-server`.
 
 ### Make sure the assets (images) are located outside the repository
