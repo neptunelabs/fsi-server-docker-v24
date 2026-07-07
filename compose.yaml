@@ -1,0 +1,135 @@
+name: fsi
+
+x-logging:
+  &limit-log
+  options:
+    # limit the combined log lines per container to 2MB
+    max-size: "2m"
+    max-file: "5"
+  driver: json-file
+
+services:
+  fsi-server-24:
+    image: ${FSI_SERVER_IMAGE_NAME:?Missing .env file. Please create one from .env.example}:${FSI_SERVER_IMAGE_TAG}
+    container_name: fsi-server-24
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: true
+    environment:
+      - TZ=${TZ:-Etc/UTC}
+    volumes:
+      - ${CONFIG_BASE_PATH:-./conf}/fsi-server:/srv/fsi/mounts/config
+      - ${CONNECTOR_PATH:-./connectors}:/connectors
+      - ${STORAGE_PATH:-./fsi-data/storage}:/srv/fsi/mounts/storage
+      - ${OVERLAY_PATH:-./fsi-data/overlay}:/srv/fsi/mounts/overlay
+      - ${LOG_PATH:-./fsi-data/logs}/fsi:/srv/fsi/mounts/catalina/logs
+      - fsi_session_data:/srv/fsi/mounts/sessions
+    networks:
+      - fsi_net_frontend
+      - fsi_net_backend
+    ports:
+      - ${FSI_SERVER_PORT:-127.0.0.1}
+    depends_on:
+      solr-10:
+        condition: service_healthy
+        required: false
+    logging: *limit-log
+    deploy:
+      resources:
+        limits:
+          memory: ${FSI_MEM_LIMIT:-4G}
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 20000
+        hard: 40000
+    stop_grace_period: 1m
+
+  solr-10:
+    image: solr:10-slim
+    container_name: solr-10
+    restart: unless-stopped
+    profiles: [search]
+    env_file:
+      - path: .env
+        required: true
+    volumes:
+      - ${CONFIG_BASE_PATH:-./conf}/solr/conf:/fsi-server-core/conf:ro
+      - solr_data:/var/solr
+    networks:
+      - fsi_net_backend
+    logging: *limit-log
+    command: ["solr-precreate", "fsi-server", "/fsi-server-core"]
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: ${SOLR_MEM_LIMIT:-2G}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8983/solr/admin/info/system || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 5s
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: caddy
+    restart: unless-stopped
+    profiles: [proxy]
+    env_file:
+      - path: .env
+        required: true
+    volumes:
+      - ${CONFIG_BASE_PATH:-./conf}/caddy:/etc/caddy
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - fsi_net_frontend
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    depends_on:
+      fsi-server-24:
+        condition: service_started
+    logging: *limit-log
+
+  lsyncd:
+    build: builder/lsyncd
+    container_name: lsyncd
+    restart: unless-stopped
+    profiles: [mirror]
+    env_file:
+      - path: .env
+        required: true
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - ${CONFIG_BASE_PATH:-./conf}/lsyncd/lsyncd.conf.lua:/config/lsyncd.lua:ro
+      - ${MIRROR_SYNC_KEY:-./conf/lsyncd/sync.key}:/sync.key:ro
+      - ${CONNECTOR_PATH:-./connectors}:${CONNECTOR_PATH:-./connectors}:ro
+      - ${STORAGE_PATH:-./fsi-data/storage}:${STORAGE_PATH:-./fsi-data/storage}:ro
+      - ${OVERLAY_PATH:-./fsi-data/overlay}:${OVERLAY_PATH:-./fsi-data/overlay}:ro
+      - ${LOG_PATH:-./fsi-data/logs}/lsync:/var/log
+    # - ${CONFIG_BASE_PATH:./conf}/fsi-server:${CONFIG_BASE_PATH:./conf}/fsi-server:ro # Be careful when synchronizing this path.
+    networks:
+      - fsi_net_sync
+    logging: *limit-log
+
+volumes:
+  fsi_session_data:
+  caddy_data:
+  caddy_config:
+  solr_data:
+
+networks:
+  fsi_net_frontend:
+    name: fsi_net_frontend
+    driver: bridge
+  fsi_net_backend:
+    name: fsi_net_backend
+    driver: bridge
+  fsi_net_sync:
+    name: fsi_net_sync
+    driver: bridge

@@ -1,0 +1,16 @@
+---
+enabled: true
+origin:
+  # internal location within docker container
+  location: "/connectors/statics"
+type: "static"
+access:
+  group:
+  - name: "public"
+    permissionSet: "public_statics"
+  - name: "authenticated"
+    permissionSet: "full"
+#  - name: "users1"
+#    permissionSet: "full"
+comment: |
+  Store static files in this connector, e.g., video, audio, PDF, CSS, etc.

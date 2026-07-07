@@ -1,0 +1,21 @@
+---
+enabled: true
+origin:
+  # internal location within docker container
+  location: "/connectors/images"
+conversion:
+  format: "JPEG"
+  quality: 95
+  levelQuality: "NORMAL"
+  chromaSubsampling: "4:4:4"
+type: "storage"
+access:
+  group:
+    - name: "public"
+      permissionSet: "public_images"
+    - name: "authenticated"
+      permissionSet: "full"
+#    - name: "users1"
+#      permissionSet: "full"
+comment: |
+  This connector is used to place images that should be recalculated in real time.

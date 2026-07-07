@@ -1,0 +1,9 @@
+.idea
+.vscode
+*.iml
+fsi-data/overlay/**
+fsi-data/logs/**
+fsi-data/storage/**
+!fsi-data/storage/.FSIServerStorage
+**/bench
+conf/fsi-server/userprefs

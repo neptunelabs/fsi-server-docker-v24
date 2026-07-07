@@ -1,0 +1,8 @@
+services:
+
+  benchmark:
+    build: builder/benchmark
+    volumes:
+      - ${CONNECTOR_PATH:?Missing .env file. Please create one from .env.example}:/bench/assets
+      - ${STORAGE_PATH}:/bench/storage
+    privileged: true

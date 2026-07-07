@@ -1,0 +1,24 @@
+---
+application:
+  enabled: true
+  storage: "/srv/fsi/mounts/storage"
+  maxCPU: "auto"
+  maxIO: "auto"
+  memoryFileIndex: true
+limits:
+  defaultRenderer: "default"
+  defaultWidth: 400
+  defaultHeight: 300
+  maxWidth: 5120
+  maxHeight: 2880
+scanner:
+  enabled: true
+  useMagicBytes: false
+  fileScanInterval: 6
+  minScanPause: 15000
+  maxScanPause: 60000
+search:
+  enabled: true
+  type: "solr"
+  solrServerUri: "{DOCKER_ENV:SOLR_SERVER_URI}"
+  core: "fsi-server"
