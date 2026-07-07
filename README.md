@@ -69,6 +69,10 @@ The `conf` directory no longer contains any configuration files for `nginx`,
 as this has been removed in favour of `caddy`.
 Apache Solr has been updated to version 10, which is not compatible with the files from Solr 6.
 
+### Changelog
+
+Please consult [the changelog](https://docs.neptunelabs.com/changes/24.07) to see the changes made compared to V22.
+
 ### Web Interface
 
 Once the containers are running, you can access the FSI Server web interface. By default, it's available at:
