@@ -28,8 +28,6 @@ services:
     networks:
       - fsi_net_frontend
       - fsi_net_backend
-    ports:
-      - ${FSI_SERVER_PORT:-127.0.0.1}
     depends_on:
       solr-10:
         condition: service_healthy
