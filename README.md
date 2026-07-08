@@ -29,7 +29,10 @@ FSI Server also includes a suite of viewer components for easy integration into 
 
 ### How to Use This Repository
 
-**Copy the '.env.example' file to '.env'** and customize the variables to suit your needs.
+> [!IMPORTANT]
+> **Copy the '.env.example' file to '.env'**
+
+Customize the variables to suit your needs.
 However, if you're using the default settings and just testing, you don't need to make any changes.
 
 We recommend changing the value for `SERVER_DOMAINS` to match one of your domains and then accessing
