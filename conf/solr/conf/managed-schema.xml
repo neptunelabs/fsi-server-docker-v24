@@ -2,24 +2,24 @@
 <schema name="fsi-server" version="1.6">
 
   <fields>
-    <field name="asset.fullpath" type="string" indexed="true" stored="true" required="true" multiValued="false" />
+    <field name="asset.fullpath" type="string" indexed="true" stored="true" required="true" multiValued="false" docValues="true" />
 
-    <field name="file.connector" type="string" indexed="true" stored="false" />
-    <field name="file.type" type="string" indexed="true" stored="true" />
-    <field name="file.path" type="string" indexed="true" stored="false" />
-    <field name="file.fullpath" type="string" indexed="true" stored="false" />
-    <field name="file.name" type="string" indexed="true" stored="false" />
-    <field name="file.prefix" type="string" indexed="true" stored="false" />
-    <field name="file.suffix" type="string" indexed="true" stored="false" />
-    <field name="file.lastmodified" type="pdate" indexed="true" stored="true" />
-    <field name="file.size" type="plong" indexed="true" stored="true" />
-    <field name="file.width" type="pint" indexed="true" stored="true" />
-    <field name="file.height" type="pint" indexed="true" stored="true" />
-    <field name="file.alpha" type="pint" indexed="true" stored="true" />
-    <field name="file.resolution" type="plong" indexed="true" stored="false" />
-    <field name="file.status" type="pint" indexed="true" stored="true" />
-    <field name="file.statusupdate" type="pdate" indexed="true" stored="false" />
-    <field name="file.icc" type="string" indexed="true" stored="false" />
+    <field name="file.connector" type="string" indexed="true" stored="false" docValues="true" />
+    <field name="file.type" type="string" indexed="true" stored="true" docValues="true" />
+    <field name="file.path" type="string" indexed="true" stored="false" docValues="true" />
+    <field name="file.fullpath" type="string" indexed="true" stored="false" docValues="true" />
+    <field name="file.name" type="string" indexed="true" stored="false" docValues="true" />
+    <field name="file.prefix" type="string" indexed="true" stored="false" docValues="true" />
+    <field name="file.suffix" type="string" indexed="true" stored="false" docValues="true" />
+    <field name="file.lastmodified" type="pdate" indexed="true" stored="true" docValues="true" />
+    <field name="file.size" type="plong" indexed="true" stored="true" docValues="true" />
+    <field name="file.width" type="pint" indexed="true" stored="true" docValues="true" />
+    <field name="file.height" type="pint" indexed="true" stored="true" docValues="true" />
+    <field name="file.alpha" type="pint" indexed="true" stored="true" docValues="true" />
+    <field name="file.resolution" type="plong" indexed="true" stored="false" docValues="true" />
+    <field name="file.status" type="pint" indexed="true" stored="true" docValues="true" />
+    <field name="file.statusupdate" type="pdate" indexed="true" stored="false" docValues="true" />
+    <field name="file.icc" type="string" indexed="true" stored="false" docValues="true" />
 
     <field name="_text_" type="text_general" indexed="true" stored="false" multiValued="true"/>
 
