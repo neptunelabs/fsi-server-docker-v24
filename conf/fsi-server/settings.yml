@@ -4,7 +4,10 @@ application:
   storage: "/srv/fsi/mounts/storage"
   maxCPU: "auto"
   maxIO: "auto"
-  memoryFileIndex: true
+authentication:
+  authModules:
+    - type: "file"
+      enabled: true
 limits:
   defaultRenderer: "default"
   defaultWidth: 400
@@ -13,6 +16,7 @@ limits:
   maxHeight: 2880
 scanner:
   enabled: true
+  memoryIndex: true
   useMagicBytes: false
   fileScanInterval: 6
   minScanPause: 15000
