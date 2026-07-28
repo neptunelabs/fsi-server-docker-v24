@@ -42,7 +42,7 @@
   <query>
     <maxBooleanClauses>${solr.max.booleanClauses:1024}</maxBooleanClauses>
     <minPrefixQueryTermLength>${solr.query.minPrefixLength:-1}</minPrefixQueryTermLength>
-    <filterCache size="512" initialSize="512" autowarmCount="0"/>
+    <filterCache class="solr.CaffeineCache" size="512" initialSize="512" autowarmCount="0"/>
     <queryResultCache size="512" initialSize="512" autowarmCount="0"/>
     <documentCache size="512" initialSize="512" autowarmCount="0"/>
     <cache name="perSegFilter" class="solr.CaffeineCache" size="10" initialSize="0" autowarmCount="10" regenerator="solr.NoOpRegenerator" />
