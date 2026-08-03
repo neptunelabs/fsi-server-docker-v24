@@ -14,8 +14,7 @@ services:
     container_name: fsi-server-24
     restart: unless-stopped
     env_file:
-      - path: .env
-        required: true
+      - .env
     environment:
       - TZ=${TZ:-Etc/UTC}
     volumes:
@@ -50,8 +49,7 @@ services:
     restart: unless-stopped
     profiles: [search]
     env_file:
-      - path: .env
-        required: true
+      - .env
     volumes:
       - ${CONFIG_BASE_PATH:-./conf}/solr/conf:/fsi-server-core/conf:ro
       - solr_data:/var/solr
@@ -81,8 +79,7 @@ services:
     restart: unless-stopped
     profiles: [proxy]
     env_file:
-      - path: .env
-        required: true
+      - .env
     volumes:
       - ${CONFIG_BASE_PATH:-./conf}/caddy:/etc/caddy
       - caddy_data:/data
@@ -104,8 +101,7 @@ services:
     restart: unless-stopped
     profiles: [mirror]
     env_file:
-      - path: .env
-        required: true
+      - .env
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - ${CONFIG_BASE_PATH:-./conf}/lsyncd/lsyncd.conf.lua:/config/lsyncd.lua:ro
